@@ -21,13 +21,13 @@ argent_add_live_user() {
 }
 
 argent_live_user_groups() {
-	for group in tty disk lp wheel uucp console audio cdrom tape video cdrw usb plugdev messagebus portage vboxsf vboxguest ; do
+	for group in tty disk lp wheel uucp console audio cdrom tape video cdrw usb plugdev pipewire messagebus portage vboxsf vboxguest ; do
 		gpasswd -a "$liveuser" "$group" > /dev/null 2>&1
 	done
 }
 
 argent_live_user_password() {
-	echo "$liveuser":"$liveuser" | /usr/sbin/chpasswd > /dev/null 2>&1
+	passwd -d "$liveuser" > /dev/null || continue
 }
 
 argent_live_locale_switch() {
@@ -37,7 +37,21 @@ argent_live_locale_switch() {
 		/usr/bin/localectl set-locale LANG="$lang_toset" > /dev/null 2>&1
 		/usr/bin/localectl set-keymap "$keymap_toset" > /dev/null 2>&1
 		/usr/sbin/env-update --no-ldconfig > /dev/null 2>&1
+	else
+		/usr/bin/eselect locale set "en_US.utf8" > /dev/null 2>&1
+		/usr/sbin/env-update --no-ldconfig > /dev/null 2>&1
 	fi
+}
+
+argent_set_dm_configuration(){
+	if [[ -e "/usr/share/wayland-sessions/plasma.desktop" ]]; then
+		session="plasma"
+	fi
+
+	if [[ -n "$session" ]]; then
+		sed -i -e "0,|User=|s|User=.*|User=argent|" -e "0,|Session=|s|Session=.*|Session=$session|" /etc/sddm.conf.d/00argent.conf > /dev/null 2>&1
+	fi
+
 }
 
 argent_live_installer_desktop() {
@@ -51,6 +65,7 @@ main() {
 		argent_add_live_user
 		argent_live_user_groups
 		argent_live_user_password
+		argent_set_dm_configuration
 		argent_live_installer_desktop
 		argent_live_locale_switch
 	fi
