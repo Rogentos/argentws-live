@@ -49,7 +49,7 @@ argent_set_dm_configuration(){
 	fi
 
 	if [[ -n "$session" ]]; then
-		sed -i -e "0,|User=|s|User=.*|User=argent|" -e "0,|Session=|s|Session=.*|Session=$session|" /etc/sddm.conf.d/00argent.conf > /dev/null 2>&1
+		sed -i -e "s|^User=.*|User=argent|" -e "s|^Session=.*|Session=$session|" /etc/sddm.conf.d/00argent.conf > /dev/null 2>&1
 	fi
 
 }
