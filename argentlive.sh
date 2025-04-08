@@ -55,9 +55,8 @@ argent_set_dm_configuration(){
 }
 
 argent_live_installer_desktop() {
-	cp "/usr/share/applications/calamares.desktop" "/home/"$liveuser"/Desktop"
-	sed -i "s/"Name=Calamares"/"Name=Argent\ Installer"/g" "/home/"$liveuser"/Desktop/calamares.desktop"
-	chmod 755 "/home/"$liveuser"/Desktop/calamares.desktop"
+	cp "/usr/share/applications/argent-installer.desktop" "/home/$liveuser/Desktop"
+	chmod 755 "/home/$liveuser/Desktop/argent-installer.desktop"
 }
 
 main() {
